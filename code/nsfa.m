@@ -23,10 +23,10 @@ function [samp,results]=nsfa(Y,mvmask,samp,settings,results)
 % 6. Mean square predictive error on missing values
 % 7. Predictive log likelihood of missing values
 % 8. Sparsity of Z
-% 9. Sparsity of T
+% 9. log-likelihood
 
 if nargin==4
-    results=[];
+    results=zeros(settings.iterations,9);
 end
 
 [D N]=size(Y);
@@ -84,8 +84,8 @@ for r=1:settings.iterations
 
     Z_sparsity=mean(mean(samp.Z));
     % Record some statistics about this iteration...
-    results=[results;basetime+toc,logposterior,samp.alpha,samp.Beta,K,predError, ...
-        logpredlikelihood,mean(mean(samp.Z))];
+    results(r,:)=[basetime+toc,logposterior,samp.alpha,samp.Beta,K,predError, ...
+        logpredlikelihood,mean(mean(samp.Z)), loglikelihood];
 
     % ... and output them to the screen
     if settings.verbose
